@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>投票页面</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">投票信息</h5>
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-2 text-muted">投票名称: {{ data.vote_name }}</h6>
+                <p class="card-text">描述: {{ data.vote_des }}</p>
+                <p class="card-text">截止时间: {{ data.vote_ddl }}</p>
+            </div>
+            <div class="card-footer">
+                <form>
+                    {% if data.vote_op1 != 'null' %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="voteOption" id="voteOption1" value="{{ data.vote_op1 }}">
+                        <label class="form-check-label" for="voteOption1">
+                            {{ data.vote_op1 }}
+                        </label>
+                    </div>
+                    {% endif %}
+
+                    {% if data.vote_op2 != 'null' %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="voteOption" id="voteOption2" value="{{ data.vote_op2 }}">
+                        <label class="form-check-label" for="voteOption2">
+                            {{ data.vote_op2 }}
+                        </label>
+                    </div>
+                    {% endif %}
+
+                    {% if data.vote_op3 != 'null' %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="voteOption" id="voteOption3" value="{{ data.vote_op3 }}">
+                        <label class="form-check-label" for="voteOption3">
+                            {{ data.vote_op3 }}
+                        </label>
+                    </div>
+                    {% endif %}
+
+                    {% if data.vote_op4 != 'null' %}
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="voteOption" id="voteOption4" value="{{ data.vote_op4 }}">
+                        <label class="form-check-label" for="voteOption4">
+                            {{ data.vote_op4 }}
+                        </label>
+                    </div>
+                    {% endif %}
+
+                    <button type="button" class="btn btn-primary mt-3" onclick="submitVote()">提交投票</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        function submitVote() {
+            var selectedOption = document.querySelector('input[name="voteOption"]:checked').value;
+            console.log("Successfully enter submitVote Function");  // 打印 vote_id 以进行调试
+            sendVoteData(selectedOption);
+        }
+
+        function sendVoteData(selectedOption) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/process_vote', true);
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log('投票数据已发送到后端进程');
+                }
+            };
+            var data = JSON.stringify({ option: selectedOption });
+            xhr.send(data);
+        }
+    </script>
+</body>
+</html>

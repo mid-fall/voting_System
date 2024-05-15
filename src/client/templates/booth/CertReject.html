@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>证书请求被拒绝</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f8d7da;
+            color: #721c24;
+            font-family: Arial, sans-serif;
+        }
+        .message-container {
+            text-align: center;
+            border: 1px solid #f5c6cb;
+            padding: 20px;
+            background-color: #f8d7da;
+            border-radius: 5px;
+        }
+    </style>
+    <script>
+        // 在页面加载完成后启动定时器
+        window.onload = function() {
+            var countdown = 3; // 设置倒计时秒数
+            var timer = setInterval(function() {
+                document.getElementById('countdown').innerText = countdown;
+                countdown--;
+                if (countdown < 0) {
+                    clearInterval(timer);
+                    window.location.href = '/';
+                }
+            }, 1000); // 每秒执行一次
+        };
+    </script>
+</head>
+<body>
+    <div class="message-container">
+        <h1>证书请求被拒绝</h1>
+        <p>服务器拒绝提供证书。</p>
+        <p>页面将在 <span id="countdown">3</span> 秒后自动跳转。</p>
+    </div>
+</body>
+</html>

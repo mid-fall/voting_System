@@ -1,0 +1,15 @@
+bvm:
+    security: 80
+    num_of_voters: 3
+    candidate_labels:
+      - "Today"
+      - "Tomorrow"
+      - "Next week"
+ip: '127.0.0.1'
+port: '9000'
+
+pubkey_repo:
+  board: 'instance/board.pub'
+  booth: 'instance/booth.pub'
+
+privkey: 'instance/server'

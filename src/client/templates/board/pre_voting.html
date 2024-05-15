@@ -1,0 +1,18 @@
+<title>Bingo Voting Board Client</title>
+<body>
+    <h1>Candidate Commitments</h1>
+    {% for label, commitments in candidate_data.items() %}
+        <div>
+            {{label}}:<br>
+            <ul>
+                {% for cm in commitments %}
+                    <li>{{cm}}</li>
+                {% endfor %}
+            </ul>
+        </div><br>
+    {% endfor %}
+    <br>
+    <form>
+            <button type="submit" formaction={{home_uri}}>Back to menu</button><br>
+        </form>
+</body>

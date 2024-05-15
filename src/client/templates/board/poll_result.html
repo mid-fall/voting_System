@@ -1,0 +1,33 @@
+<title>Bingo Voting Board Client</title>
+<body>
+    <h1>Poll Result</h1>
+    <h2>Tally</h2>
+    <div>
+        Recorded votes count: {{received_votes_count}} / {{registered_votes_count}}<br>
+        <br>
+        {% for label, votes in poll_data.items() %}
+            {{label}}: {{votes}}<br>
+        {% endfor %}
+    </div>
+    <br>
+
+    <h2>Unused Dummy Votes</h2>
+    <div>
+        <ul>
+            {% for label, votes in unused_dummy_vote.items() %}
+                <li>{{label}}</li>
+                {% for v in votes %}
+                Value = {{v[0]}}<br>
+                Commitment = {{v[1]}}<br>
+                r Value = {{v[2]}}<br>
+                <br>
+                {% endfor %}
+                <br>
+            {% endfor %}
+        </ul>
+    </div>
+    <form>
+        <button type="submit" formaction={{refresh_uri}}>Refresh</button>
+        <button type="submit" formaction={{home_uri}}>Back to menu</button><br>
+    </form>
+</body>

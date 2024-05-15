@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5">User Registration</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="username">用户名:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">密码:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="confirm_password">确认您的密码:</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="sex">性别:</label>
+                <select id="sex" name="sex" class="form-control">
+                    <option value="male">Boy</option>
+                    <option value="female">Girl</option>
+                    <option value="secret">Secret</option>
+                </select>
+            </div>
+            <button type="button" class="btn btn-primary" onclick="submitRegister()">Register</button>
+        </form>
+    </div>
+    <!-- 引入 Bootstrap JS 和 jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+function submitRegister() {
+    var form = document.getElementById('registerForm');
+    var password = form.elements['password'].value;
+    var confirm_password = form.elements['confirm_password'].value;
+    var formData = new FormData(form);
+    var serverSubmitPoll = "{{ submit_register }}";
+
+    if (password !== confirm_password) {
+        showMessage('您两次输入的密码不一致');
+        return; // 结束函数执行
+    }
+
+    var xhr = new XMLHttpRequest();
+
+    xhr.open('POST', serverSubmitPoll, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                // 请求成功，您可以在这里处理成功的逻辑
+                var responseJson = xhr.response
+                console.log(responseJson)
+                showMessage(JSON.stringify(responseJson))
+                window.location.href = '/success_page'; // 这里填写跳转的页面URL
+            } else {
+                // 请求失败，您可以在这里处理失败的逻辑
+                var responseJson = JSON.parse(xhr.responseText)
+                console.log(responseJson)
+                alert('Failed to register user!');
+            }
+        }
+    };
+    xhr.send(formData);
+
+}
+
+function submitRegister2() {
+    return new Promise(function(resolve, reject) {
+        var form = document.getElementById('registerForm');
+        var username = form.elements['username'].value;
+        var password = form.elements['password'].value;
+        var confirm_password = form.elements['confirm_password'].value;
+        var email = form.elements['email'].value;
+        var sex = form.elements['sex'].value;
+
+        // 检查密码和确认密码是否一致
+        if (password !== confirm_password) {
+            // 弹出消息框提示密码不一致
+            showMessage('Password and Confirm Password do not match.');
+            reject('Password mismatch'); // reject Promise
+            return; // 结束函数执行
+        }
+
+        var formData = new FormData(form);
+        var serverSubmitPoll = "{{ submit_register }}";
+
+        var xhr = new XMLHttpRequest();
+
+        xhr.open('POST', serverSubmitPoll, true);
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 200) {
+                    // 请求成功，您可以在这里处理成功的逻辑
+                    alert('User registered successfully!');
+                    resolve(xhr.responseText); // resolve Promise
+                } else {
+                    // 请求失败，您可以在这里处理失败的逻辑
+                    //alert('Failed to register user!');
+                    alert('AAAAAAAAAAA');
+                    reject('Registration failed'); // reject Promise
+                }
+            }
+        };
+        xhr.send(formData);
+    });
+}
+
+function submitRegister3() {
+    submitRegister2()
+        .then(function(response) {
+            // 处理服务器响应数据
+            console.log('Server response:', response);
+            // 在这里执行你希望在服务器响应后进行的操作
+        })
+        .catch(function(error) {
+            // 处理错误情况
+            console.error('Error:', error);
+            // 在这里执行你希望在出现错误时进行的操作
+        });
+}
+
+
+    </script>
+
+<script>
+    // 定义弹出框显示信息的函数
+    function showMessage(message) {
+        // 使用 Bootstrap 的模态框来显示信息
+        var modalContent = `
+            <div class="modal fade" id="messageModal" tabindex="-1" role="dialog" aria-labelledby="messageModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="messageModalLabel">Message</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            ${message}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        // 将模态框添加到页面中
+        $('body').append(modalContent);
+
+        // 显示模态框
+        $('#messageModal').modal('show');
+    }
+
+    // 如果页面加载时收到消息信息，则显示消息
+    $(document).ready(function () {
+        var message = "{{ message }}";  // 使用 Flask 传递的消息信息
+        if (message) {
+            showMessage(message);
+        }
+    });
+</script>
+</body>
+</html>

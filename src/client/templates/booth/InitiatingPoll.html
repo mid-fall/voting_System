@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Poll</title>
+<!-- Add Bootstrap CSS for styling -->
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Include Flatpickr CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+
+<!-- Include Flatpickr JS -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+</head>
+<body>
+<div class="container mt-5">
+    <h1 class="mb-4">创建投票</h1>
+    <form id="pollForm">
+        <div class="form-group">
+            <label for="pollTitle">投票名称：</label>
+            <input type="text" class="form-control" id="pollTitle" name="pollTitle" required>
+        </div>
+
+        <div class="form-group">
+            <label for="pollDescription">投票描述：</label>
+            <input type="text" class="form-control" id="pollDescription" name="pollDescription" required>
+        </div>
+
+        <div class="form-group">
+            <label for="deadline">截止日期：</label>
+            <input type="text" class="form-control" id="deadline" name="deadline" required>
+        </div>
+        
+
+        <div class="form-group">
+            <label for="optionCount">选项数量（最多四个）：</label>
+            <select class="form-control" id="optionCount" name="optionCount" onchange="generateOptionFields()">
+                <option selected disabled>请选择</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+            </select>
+        </div>
+
+        <div id="optionFields"></div>
+
+        <button type="button" class="btn btn-primary" onclick="previewPoll()">预览</button>
+    </form>
+
+    <!-- Modal -->
+    <div class="modal fade" id="previewModal" tabindex="-1" role="dialog" aria-labelledby="previewModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="previewModalLabel">预览</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="previewContent"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Bootstrap JS for modal functionality -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.1/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    flatpickr("#deadline", {
+        enableTime: true,
+        dateFormat: "Y-m-d H:i:S",
+        minDate: "today",
+        defaultHour: 12, // Set the default hour (optional)
+        defaultMinute: 0, // Set the default minute (optional)
+        defaultSeconds: 0 // Set the default seconds (optional)
+    });
+</script>
+
+<script>
+function generateOptionFields() {
+    var optionCount = document.getElementById('optionCount').value;
+    var optionFields = document.getElementById('optionFields');
+    optionFields.innerHTML = '';
+
+    for (var i = 0; i < optionCount; i++) {
+        var optionLabel = document.createElement('label');
+        optionLabel.textContent = '选项' + (i + 1) + '名称：';
+        var optionInput = document.createElement('input');
+        optionInput.type = 'text';
+        optionInput.className = 'form-control';
+        optionInput.name = 'option' + (i + 1);
+        optionInput.required = true;
+
+        optionFields.appendChild(optionLabel);
+        optionFields.appendChild(optionInput);
+    }
+}
+
+function previewPoll() {
+    var form = document.getElementById('pollForm');
+    var modal = document.getElementById('previewModal');
+    var title = document.getElementById('pollTitle').value;
+    var description = document.getElementById('pollDescription').value;
+    var deadline = document.getElementById('deadline').value;
+
+    var previewContent = document.getElementById('previewContent');
+    previewContent.innerHTML = '';
+
+    var previewTitle = document.createElement('h5');
+    previewTitle.textContent = '投票名称： ' + title;
+    previewContent.appendChild(previewTitle);
+
+    var previewDescription = document.createElement('p');
+    previewDescription.textContent = '投票介绍： ' + description;
+    previewContent.appendChild(previewDescription);
+
+    var previewDeadline = document.createElement('p');
+    previewDeadline.textContent = '投票截止时间： ' + new Date(deadline).toLocaleString();
+    previewContent.appendChild(previewDeadline);
+
+    var optionCount = document.getElementById('optionCount').value;
+    for (var i = 0; i < optionCount; i++) {
+        var optionValue = form.elements['option' + (i + 1)].value;
+        var previewOption = document.createElement('p');
+        previewOption.textContent = '选项 ' + (i + 1) + ': ' + optionValue;
+        previewContent.appendChild(previewOption);
+    }
+
+    $(modal).modal('show');
+}
+
+function submitForm() {
+    var form = document.getElementById('pollForm');
+    var formData = new FormData(form);
+    var serverSubmitPoll = "{{ submit_poll }}";
+
+    var xhr = new XMLHttpRequest();
+
+    //xhr.open('POST', ${serverSubmitPoll}, true);
+    xhr.open('POST', serverSubmitPoll, true);
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                console.log('Form submitted successfully:', xhr.responseText);
+                // You can perform further actions here, such as showing a success message to the user
+            } else {
+                console.error('Error submitting form:', xhr.statusText);
+                // You can handle errors here, such as displaying an error message to the user
+            }
+        }
+    };
+    xhr.send(formData);
+
+}
+</script>
+</body>
+</html>

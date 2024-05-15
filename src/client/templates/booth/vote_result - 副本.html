@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vote Results</title>
+    <!-- 引入 Chart.js 库 -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./echarts.min.js"></script> -->
+</head>
+<body>
+    <h1>Vote Results</h1>
+    
+
+    <!-- 创建 Canvas 元素用于绘制饼图 -->
+    <div id="chartpie" class="chart">
+        123
+    </div>
+    
+</body>
+<script src="https://cdn.jsdelivr.net/npm/echarts/dist/echarts.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    var chartDom = document.getElementById('chartpie');
+    var myChart = echarts.init(chartDom);
+    var option;
+
+    
+    option = {
+  title: {
+    text: 'Referer of a Website',
+    subtext: 'Fake Data',
+    left: 'center'
+  },
+  tooltip: {
+    trigger: 'item'
+  },
+  legend: {
+    orient: 'vertical',
+    left: 'left'
+  },
+  series: [
+    {
+      name: 'Access From',
+      type: 'pie',
+      radius: '50%',
+      data: [
+        { value: 1048, name: 'Search Engine' },
+        { value: 735, name: 'Direct' },
+        { value: 580, name: 'Email' },
+        { value: 484, name: 'Union Ads' },
+        { value: 300, name: 'Video Ads' }
+      ],
+      emphasis: {
+        itemStyle: {
+          shadowBlur: 10,
+          shadowOffsetX: 0,
+          shadowColor: 'rgba(0, 0, 0, 0.5)'
+        }
+      }
+    }
+  ]
+};
+    option && myChart.setOption(option);
+
+
+</script>
+
+</html>

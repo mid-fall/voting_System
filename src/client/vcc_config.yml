@@ -1,0 +1,9 @@
+client_ip: '127.0.0.1'
+client_port: '9002'
+client_protocol: ''
+client_privkey: 'instance/board'
+
+server_ip: '127.0.0.1'
+server_port: '9000'
+server_protocol: ''
+server_pubkey: 'instance/server.pub'

@@ -1,0 +1,21 @@
+<title>Bingo Voting Board Client</title>
+<body>
+    <h1>Published Ballots:</h1>
+    {% for ballot in ballot_list %}
+        <div>
+            ID: {{ballot["id"]}}<br>
+            <ul>
+                {% for label, commitment in ballot["content"].items() %}
+                    <li>{{label}}: {{commitment}}</li>
+                {% endfor %}
+            </ul>
+            <br>
+        </div>
+    {% endfor %}
+    <br>
+    <form>        
+        <button type="submit" formaction={{refresh_uri}}>Refresh</button>
+        <button type="submit" formaction={{home_uri}}>Back to menu</button>
+        <br>
+    </form>
+</body>
